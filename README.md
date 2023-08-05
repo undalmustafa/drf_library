@@ -1,5 +1,3 @@
 # drf_library
 
-Written by Musti
-
-Wish you well
+A library system built with Django and Django REST framework
