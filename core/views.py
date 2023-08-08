@@ -1,43 +1,29 @@
-from django.http import HttpResponse, JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from rest_framework.parsers import JSONParser
-from core.models import Book
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from django.http import Http404
 from core.serializers import BookSerializer
-# Create your views here.
+from core.models import Book
 
-@csrf_exempt
-def book_list(request):
-    if request.method == 'GET':
+class BookItemsGet(APIView):
+    def get(self, request, format=None):
         books = Book.objects.all()
         serializer = BookSerializer(books, many=True)
-        return JsonResponse(serializer.data, safe=False)
+        return Response(serializer.data)
 
-    elif request.method == 'POST':
-        data = JSONParser().parse(request)
-        serializer = BookSerializer(data=data)
+class BookItemsPost(APIView):
+    def post(self, request, format=None):
+        serializer = BookSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data, status=201)
-        return JsonResponse(serializer.errors, status=400)
-@csrf_exempt
-def book_detail(request, pk):
-    try:
-        book = Book.objects.get(pk=pk)
-    except Book.DoesNotExist:
-        return HttpResponse(status=404)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    if request.method == 'GET':
-        serializer = BookSerializer(book)
-        return JsonResponse(serializer.data)
-
-    elif request.method =="PUT":
-        data = JSONParser().parse(request)
-        serializer = BookSerializer(book, data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(serializer.data)
-        return JsonResponse(serializer.errors, status=400)
-
-    elif request.method =='DELETE':
-        book.delete()
-        return HttpResponse(status=204)
+class BookDetail(APIView):
+    def get(self, request, pk, format=None):
+        try:
+            book = Book.objects.get(pk=pk)
+            serializer = BookSerializer(book)
+            return Response(serializer.data)
+        except Book.DoesNotExist:
+            raise Http404
