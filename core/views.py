@@ -20,10 +20,10 @@ class BookItemsPost(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class BookDetail(APIView):
-    def get(self, request, pk, format=None):
+    def get(self, request, slug, format=None):
         try:
-            book = Book.objects.get(pk=pk)
-            serializer = BookSerializer(book)
+            book = Book.objects.filter(slug=slug)
+            serializer = BookSerializer(book, many=True)
             return Response(serializer.data)
         except Book.DoesNotExist:
             raise Http404
