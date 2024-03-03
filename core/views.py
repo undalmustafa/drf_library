@@ -34,3 +34,14 @@ class BookDetail(ViewSet):
             return Response(serializer.data)
         except Book.DoesNotExist:
             raise Http404
+
+    def destroy(self, request, id, format=None):
+        try:
+            book = Book.objects.filter(id=id)
+            self.perform_destroy(book)
+        except Http404:
+            pass
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def perform_destroy(self, instance):
+        instance.delete()
