@@ -9,7 +9,7 @@ First, you have to install Python before downloading the project. After that:
 
 Step 1: Extract the file
 
-Step 2: Go to .env file, write your secret key and debug choice.
+Step 2: Create a .env file in project folder, write your secret key and debug choice in to .env file.
 
 Step 3: Go inside project folder, open cmd and type the following commands to install Django, Django REST Framework and run the server:
 
