@@ -11,7 +11,7 @@ class Book(models.Model):
     book_name = models.CharField(max_length=255)
     author_name = models.CharField(max_length=255)
     book_genre = models.CharField(max_length=255)
-    slug = AutoSlugField(populate_from='book_name')
+    slug = AutoSlugField(populate_from='book_name', always_update=True)
 
     def __str__(self):
         return self.book_name

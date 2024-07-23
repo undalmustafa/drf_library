@@ -45,3 +45,11 @@ class BookDetail(ViewSet):
 
     def perform_destroy(self, instance):
         instance.delete()
+
+    def update(self, request, id, format=None):
+        book = Book.objects.filter(id=id).first()
+        serializer = BookSerializer(book, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
